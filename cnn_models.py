@@ -9,10 +9,12 @@ def CustomModel():
     custom_model = Sequential()
 
     # Convolutional Layers
-    custom_model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(300, 300, 3))) 
+    custom_model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(500, 500, 3))) 
     custom_model.add(MaxPooling2D((2, 2)))
+    
     custom_model.add(Conv2D(64, (3, 3), activation='relu'))
     custom_model.add(MaxPooling2D((2, 2)))
+    
     custom_model.add(Conv2D(128, (3, 3), activation='relu'))
     custom_model.add(MaxPooling2D((2, 2)))
 
@@ -23,7 +25,7 @@ def CustomModel():
     custom_model.add(Dense(128, activation='relu'))
     custom_model.add(Dense(64, activation='relu'))
 
-    custom_model.add(Dense(2, activation='softmax')) 
+    custom_model.add(Dense(1, activation='sigmoid')) 
 
     custom_model.summary() 
 
@@ -35,7 +37,7 @@ def ResNetModel():
 
     pretrained_model = tf.keras.applications.ResNet50(
         include_top=False,
-        input_shape=(300, 300, 3),
+        input_shape=(500, 500, 3),
         pooling = 'avg',
         classes=2,
         weights=None,
@@ -43,12 +45,11 @@ def ResNetModel():
 
     # Add the layers
     resnet_model.add(pretrained_model)
-    resnet_model.add(layers.Flatten())
     resnet_model.add(layers.Dense(512, activation = 'relu'))
     resnet_model.add(layers.Dropout(0.5))
 
     # the last layer must specify how many number classes needed to evaluate
-    resnet_model.add(layers.Dense(2, activation = 'softmax'))
+    resnet_model.add(layers.Dense(1, activation = 'sigmoid'))
 
     resnet_model.summary()
 

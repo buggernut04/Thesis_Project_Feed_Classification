@@ -134,12 +134,12 @@ def img_augmentation(input_folder):
     p.flip_left_right(probability=0.5)
 
     # shifting
-    p.random_distortion(probability=0.5, grid_width=4, grid_height=4, magnitude=8)
+    # p.random_distortion(probability=0.5, grid_width=4, grid_height=4, magnitude=8)
 
     # lighting
     p.random_brightness(probability=0.5, min_factor=0.8, max_factor=1.2)
     p.random_contrast(probability=0.5, min_factor=0.8, max_factor=1.2)
 
     # number of samples
-    p.sample(500)
+    p.sample(1500)
 
