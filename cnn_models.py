@@ -1,33 +1,35 @@
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import layers
+from tensorflow.keras import layers, regularizers
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 
 def CustomModel():
     custom_model = Sequential()
 
-    # Convolutional Layers
-    custom_model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(500, 500, 3))) 
-    custom_model.add(MaxPooling2D((2, 2)))
-    
-    custom_model.add(Conv2D(64, (3, 3), activation='relu'))
-    custom_model.add(MaxPooling2D((2, 2)))
-    
-    custom_model.add(Conv2D(128, (3, 3), activation='relu'))
-    custom_model.add(MaxPooling2D((2, 2)))
+    # First Layer
+    custom_model.add(layers.Conv2D(16, (3, 3), activation='relu', input_shape=(400, 400, 3)))
+    custom_model.add(layers.BatchNormalization())  # Add Batch Normalization
+    custom_model.add(layers.MaxPooling2D((2, 2)))
 
-    # Flatten the output
-    custom_model.add(Flatten())
+    # Second Layer
+    custom_model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+    custom_model.add(layers.BatchNormalization())  # Add Batch Normalization
+    custom_model.add(layers.MaxPooling2D((2, 2)))
 
-    # Dense Layers
-    custom_model.add(Dense(128, activation='relu'))
-    custom_model.add(Dense(64, activation='relu'))
+    # Third Layer
+    custom_model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    custom_model.add(layers.BatchNormalization())  # Add Batch Normalization
+    custom_model.add(layers.MaxPooling2D((2, 2)))
 
-    custom_model.add(Dense(1, activation='sigmoid')) 
+    # Last Layer
+    custom_model.add(layers.Flatten())
+    custom_model.add(layers.Dropout(0.5))  # Add Dropout
 
-    custom_model.summary() 
+    custom_model.add(layers.Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.001)))  # L2 Regularization
+    custom_model.add(layers.Dropout(0.5))  # Add Dropout
+
+    custom_model.add(layers.Dense(1, activation='sigmoid'))
 
     return custom_model
 
@@ -37,15 +39,17 @@ def ResNetModel():
 
     pretrained_model = tf.keras.applications.ResNet50(
         include_top=False,
-        input_shape=(500, 500, 3),
+        input_shape=(400, 400, 3),
         pooling = 'avg',
         classes=2,
-        weights=None,
+        weights='imagenet',
     )
+
+    pretrained_model.trainable = False  # Freeze ResNet layers initially
 
     # Add the layers
     resnet_model.add(pretrained_model)
-    resnet_model.add(layers.Dense(512, activation = 'relu'))
+    resnet_model.add(layers.Dense(128, activation = 'relu'))
     resnet_model.add(layers.Dropout(0.5))
 
     # the last layer must specify how many number classes needed to evaluate

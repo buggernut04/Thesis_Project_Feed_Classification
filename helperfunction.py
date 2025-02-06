@@ -6,6 +6,7 @@ import Augmentor
 import random
 from PIL import Image
 from collections import Counter
+import shutil
 
 def resize_and_crop_images(directory_path, output_path, target_size=(400, 400)):
     if not os.path.isdir(directory_path):
@@ -47,6 +48,29 @@ def resize_and_crop_images(directory_path, output_path, target_size=(400, 400)):
             except Exception as e:
                 print(f"Error processing image '{image_path}': {e}")
 
+def resize_img(img_samp):
+    # Convert BGR to RGB for Matplotlib display
+    img_rgb = cv2.cvtColor(img_samp, cv2.COLOR_BGR2RGB)
+
+    #print(img_rgb.shape)
+
+    target_size = 2800
+    pos = 2
+
+    # Define the rectangle coordinates
+    x1 = (img_rgb.shape[1] - target_size) // pos
+    y1 = (img_rgb.shape[0] - target_size) // pos
+    x2 = (img_rgb.shape[1] + target_size) // pos
+    y2 = (img_rgb.shape[0] + target_size) // pos
+
+    # Extract the region of interest (ROI) within the rectangle
+    roi = img_rgb[y1:y2, x1:x2]
+
+    # Resize the ROI to 400x400
+    resized_roi = cv2.resize(roi, (400, 400))
+
+    return resized_roi
+
 
 def segment_img(gray_img):
     # Compute histogram
@@ -80,7 +104,7 @@ def segment_img(gray_img):
 
     return thresh_img
 
-def extract_and_resize_foreground(img, opened_img, target_size=(500, 500)):
+def extract_and_resize_foreground(img, opened_img, target_size=(400, 400)):
     
     # Apply threshold to separate foreground from background
     # Since the background is dark and foreground is light,
@@ -123,11 +147,34 @@ def extract_and_resize_foreground(img, opened_img, target_size=(500, 500)):
     
     return final_result
 
+def transfer_image_train_and_test(input_path, testing_path, training_path):
+    # Get a list of files in the directory, sorted by filename
+    files = sorted(os.listdir(input_path), key=lambda x: int(x.split('(')[1].split(')')[0]))
+    index = 1
+
+    for filename in files:
+        filepath = os.path.join(input_path, filename)
+        # print(filepath)
+        # print(type(filepath))
+        # print(type(filepath))
+            
+        if os.path.isfile(filepath):
+            destination_path = os.path.join(testing_path, filename) if index <= 12 else os.path.join(training_path, filename)
+
+            # Move the file using shutil.move (handles cases where source and dest are on different drives)
+            shutil.copy2(filepath, destination_path)  # or shutil.copy2(src, dst) to copy and keep original
+            print(f"Image moved successfully from {input_path} to {destination_path}")
+
+        index += 1
+
+        if index > 20:
+            index = 1
+
 def img_augmentation(input_folder):
     p = Augmentor.Pipeline(input_folder)
     
     # scaling
-    p.zoom(probability=0.5, min_factor=0.8, max_factor=1.5)
+    p.zoom(probability=0.9, min_factor=0.8, max_factor=1.5)
 
     # rotation / flip
     p.flip_top_bottom(probability=0.5)
