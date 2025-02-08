@@ -48,20 +48,20 @@ def resize_and_crop_images(directory_path, output_path, target_size=(400, 400)):
             except Exception as e:
                 print(f"Error processing image '{image_path}': {e}")
 
-def resize_img(img_samp):
+def resize_img(img_samp, target_size):
     # Convert BGR to RGB for Matplotlib display
     img_rgb = cv2.cvtColor(img_samp, cv2.COLOR_BGR2RGB)
 
     #print(img_rgb.shape)
 
-    target_size = 2800
+    t_size = target_size
     pos = 2
 
     # Define the rectangle coordinates
-    x1 = (img_rgb.shape[1] - target_size) // pos
-    y1 = (img_rgb.shape[0] - target_size) // pos
-    x2 = (img_rgb.shape[1] + target_size) // pos
-    y2 = (img_rgb.shape[0] + target_size) // pos
+    x1 = (img_rgb.shape[1] - t_size) // pos
+    y1 = (img_rgb.shape[0] - t_size) // pos
+    x2 = (img_rgb.shape[1] + t_size) // pos
+    y2 = (img_rgb.shape[0] + t_size) // pos
 
     # Extract the region of interest (ROI) within the rectangle
     roi = img_rgb[y1:y2, x1:x2]
@@ -170,23 +170,23 @@ def transfer_image_train_and_test(input_path, testing_path, training_path):
         if index > 20:
             index = 1
 
-def img_augmentation(input_folder):
+def img_augmentation(input_folder, data_size):
     p = Augmentor.Pipeline(input_folder)
     
     # scaling
-    p.zoom(probability=0.9, min_factor=0.8, max_factor=1.5)
+    p.zoom(probability=0.5, min_factor=0.5, max_factor=1.5)
 
     # rotation / flip
     p.flip_top_bottom(probability=0.5)
     p.flip_left_right(probability=0.5)
 
     # shifting
-    # p.random_distortion(probability=0.5, grid_width=4, grid_height=4, magnitude=8)
+    p.random_distortion(probability=0.5, grid_width=4, grid_height=4, magnitude=8)
 
     # lighting
     p.random_brightness(probability=0.5, min_factor=0.8, max_factor=1.2)
     p.random_contrast(probability=0.5, min_factor=0.8, max_factor=1.2)
 
     # number of samples
-    p.sample(1500)
+    p.sample(data_size)
 
