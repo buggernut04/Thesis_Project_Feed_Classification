@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href={{url_for('static' , filename = 'css/normalize.css')}}>
+        <link rel="stylesheet" href={{url_for('static' , filename = 'css/grid.css')}}>
+        <link rel='stylesheet' href={{url_for('static' , filename = 'css/styleSucc.css')}}>
+        
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;1,300&display=swap" rel="stylesheet" type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <title>Results Page</title>
+
+        <style type="text/css">
+            th{
+                text-align: center;
+                font-size: 20px;
+            }
+
+            td{
+                text-align: center;
+                font-size: 18px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class = "second-main" style = "height: 100%; width: 100%;">
+            <nav>
+                <ul style = "padding-right: 2%;" class = "main-nav">
+                    <li><a href ="/">HomePage</a></li>                
+                </ul>
+               
+            </nav>
+            <div class = "header">
+                <row style = "width: 100% ; display: flex; justify-content: center;">
+                    <h3 class="header-text">Uploaded Image</h3>
+                </row>
+                <row style = "width: 100% ; display: flex; justify-content: center;">
+                    <h3 class="header-text" id="feed" style="font-size: large;">{{ predictions.selected_model }}</h3>
+                </row>
+                <row style = "width: 100% ; display: flex; justify-content: center;">
+                    <img class = "result-img" src={{url_for('static', filename = 'images/'+ img)}}>
+                </row>
+            </div>
+
+            <div class = "info">
+            
+                <row style = "width: 100% ; display: flex; justify-content: center;">
+                    <h3 class = "header-text">Model Prediction</h3>
+                </row>
+                <row style = "width: 100%; display: flex; justify-content: center; padding-bottom: 50px;">
+                    <table class="table-bordered text-light table-custom">
+                        <tr>
+                            <th>Class</th>
+                            <th>Probability</th>
+                        </tr>
+                        <tr>
+                            <td id="class1">{{ predictions.class1 }}</td>
+                            <td id="prob1">{{ predictions.prob1 }} %</td>
+                          </tr>
+                          <tr>
+                            <td id="class2">{{ predictions.class2 }}</td>                                                         
+                            <td id="prob2">{{ predictions.prob2 }} %</td>                                                 
+                        </tr>                                                                                                               
+                    </table>
+                </row>
+            </div>
+        </div>
+
+        <script>  // JavaScript placed just before the closing </body> tag
+            window.addEventListener('DOMContentLoaded', (event) => {
+                const prob1 = parseFloat("{{ predictions.prob1 }}");
+                const prob2 = parseFloat("{{ predictions.prob2 }}");
+                
+    
+                const prob1Cell = document.getElementById("prob1"); // Use getElementById
+                const prob2Cell = document.getElementById("prob2");
+                
+                const class1Cell = document.getElementById("class1"); // Get class cells
+                const class2Cell = document.getElementById("class2");
+
+                const feed = document.getElementById("feed");
+
+                const selectedModel= "{{ predictions.selected_model }}";
+
+                const makeBoldAndBigger = (element) => {  // Helper function
+                    element.style.fontWeight = "bold";
+                    element.style.fontSize = "30px"; // Adjust size as needed
+                };
+    
+                if (prob1 > prob2) {
+                    makeBoldAndBigger(prob1Cell);
+                    makeBoldAndBigger(class1Cell);
+                } else if (prob2 > prob1) {
+                    makeBoldAndBigger(prob2Cell);
+                    makeBoldAndBigger(class2Cell);
+                }
+
+                if (selectedModel === "rb_model") {
+                    feed.textContent = "(Rice Bran)";
+                } else if (selectedModel === "corn_model") {
+                    feed.textContent = "(Corn)";
+                } else if (selectedModel === "sbm_model") {
+                    feed.textContent = "(Soybean Meal)";
+                }
+
+                
+            });
+        </script>
+    </body>
+</html>
