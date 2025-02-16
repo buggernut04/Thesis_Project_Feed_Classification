@@ -16,8 +16,8 @@ models = {}
 # Load your models (replace with your actual paths)
 model_paths = {
     "rb_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set3_rb_resnet_9.h5',
-    "corn_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set2_rb_resnet_8.h5',  # Add more models here
-    "sbm_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set3_rb_resnet_9.h5',  # Add more models here
+    "corn_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set2_rb_resnet_8.h5', 
+    "sbm_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set3_rb_resnet_9.h5',
 }
 
 for model_name, path in model_paths.items():
