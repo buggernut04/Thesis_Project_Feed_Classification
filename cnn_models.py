@@ -47,9 +47,16 @@ def ResNetModel():
 
     pretrained_model.trainable = False  # Freeze ResNet layers initially
 
+    num_layers = len(pretrained_model.layers)
+    print(f"Total number of layers in ResNet50: {num_layers}")
+
     # Add the layers
     resnet_model.add(pretrained_model)
     resnet_model.add(layers.Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.001)))  # L2 Regularization
+    resnet_model.add(layers.Dropout(0.3))
+    resnet_model.add(layers.BatchNormalization())
+
+    resnet_model.add(layers.Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.001))) # Added Dense Layer
     resnet_model.add(layers.Dropout(0.3))
     resnet_model.add(layers.BatchNormalization())
 
