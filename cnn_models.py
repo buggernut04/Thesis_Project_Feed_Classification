@@ -31,6 +31,8 @@ def CustomModel():
 
     custom_model.add(layers.Dense(1, activation='sigmoid'))
 
+    custom_model.summary()
+
     return custom_model
 
 
@@ -52,13 +54,13 @@ def ResNetModel():
 
     # Add the layers
     resnet_model.add(pretrained_model)
-    resnet_model.add(layers.Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.001)))  # L2 Regularization
+    resnet_model.add(layers.Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
     resnet_model.add(layers.Dropout(0.3))
-    resnet_model.add(layers.BatchNormalization())
+    #resnet_model.add(layers.BatchNormalization())
 
     resnet_model.add(layers.Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.001))) # Added Dense Layer
     resnet_model.add(layers.Dropout(0.3))
-    resnet_model.add(layers.BatchNormalization())
+    # resnet_model.add(layers.BatchNormalization())
 
     # the last layer must specify how many number classes needed to evaluate
     resnet_model.add(layers.Dense(1, activation = 'sigmoid'))
