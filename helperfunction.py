@@ -48,7 +48,10 @@ def resize_and_crop_images(directory_path, output_path, target_size=(400, 400)):
             except Exception as e:
                 print(f"Error processing image '{image_path}': {e}")
 
-def resize_img(img_samp, target_size):
+def resize_and_subtract_mean(img_samp, target_size):
+    # ImageNet mean RGB values (you can adjust these if needed)
+    MEAN_RGB = [123.68, 116.779, 103.939]
+
     # Convert BGR to RGB for Matplotlib display
     img_rgb = cv2.cvtColor(img_samp, cv2.COLOR_BGR2RGB)
 
@@ -68,6 +71,12 @@ def resize_img(img_samp, target_size):
 
     # Resize the ROI to 400x400
     resized_roi = cv2.resize(roi, (400, 400))
+
+    # Subtract mean RGB from each channel
+    resized_roi = resized_roi.astype(np.float32)  # Important: Convert to float before subtracting!
+    resized_roi[:, :, 0] -= MEAN_RGB[0]  # Subtract from Red channel
+    resized_roi[:, :, 1] -= MEAN_RGB[1]  # Subtract from Green channel
+    resized_roi[:, :, 2] -= MEAN_RGB[2]  # Subtract from Blue channel
 
     return resized_roi
 
