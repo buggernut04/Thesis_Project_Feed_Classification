@@ -15,9 +15,13 @@ models = {}
 
 # Load your models (replace with your actual paths)
 model_paths = {
-    "rb_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set3_rb_resnet_9.h5',
-    "corn_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set2_rb_resnet_8.h5', 
-    "sbm_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set3_rb_resnet_9.h5',
+    # "rb_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set3_rb_resnet_9.h5',
+    # "corn_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set2_rb_resnet_8.h5', 
+    # "sbm_model": 'C:\\Users\\hp\\Documents\\VSU Files\\Fourth Year\\Thesis\\Program\\Saved Models\\Rice Bran\\set3_rb_resnet_9.h5',
+
+    "rb_model": '/mnt/c/Users/Room201B/Documents/Salem - Thesis/Saved Models/Rice Bran/set3_rb_resnet_13.h5',
+    "corn_model": '/mnt/c/Users/Room201B/Documents/Salem - Thesis/Saved Models/Corn/set2_corn_resnet_3.h5', 
+    "sbm_model": '/mnt/c/Users/Room201B/Documents/Salem - Thesis/Saved Models/Soybean Meal/set1_sbm_resnet_4.h5',
 }
 
 for model_name, path in model_paths.items():
@@ -39,7 +43,7 @@ def allowed_file(filename):
 classes = ['Adulterated', 'Pure']
 
 def predict(filename, model):
-    img = image.load_img(filename, target_size=(400, 400))
+    img = image.load_img(filename, target_size=(224, 224))
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
 
