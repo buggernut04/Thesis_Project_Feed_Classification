@@ -60,7 +60,7 @@ def subtract_mean(img_samp):
 
     return img_samp
 
-def resize_img(img_samp, target_size):
+def resize_img_rectangle(img_samp, target_size):
     # Convert BGR to RGB for Matplotlib display
     img_rgb = cv2.cvtColor(img_samp, cv2.COLOR_BGR2RGB)
 
@@ -82,6 +82,45 @@ def resize_img(img_samp, target_size):
     resized_roi = cv2.resize(roi, (224, 224))
 
     return resized_roi
+
+def resize_img_circular(img_samp, target_size):
+    img_rgb = cv2.cvtColor(img_samp, cv2.COLOR_BGR2RGB)
+    
+    t_size = target_size
+    pos = 2
+        
+    # Define the circle parameters
+    center_x = img_rgb.shape[1] // pos
+    center_y = img_rgb.shape[0] // pos
+    radius = t_size // 2
+        
+    # Create a black mask with same dimensions as the image
+    mask = np.zeros(img_rgb.shape[:2], dtype=np.uint8)
+        
+    # Draw a white circle on the mask
+    cv2.circle(mask, (center_x, center_y), radius, 255, -1)
+        
+    # Apply the mask to the image
+    masked_img = cv2.bitwise_and(img_rgb, img_rgb, mask=mask)
+        
+    # Get the bounding rectangle of the circle
+    x1 = center_x - radius
+    y1 = center_y - radius
+    x2 = center_x + radius
+    y2 = center_y + radius
+        
+    # Crop the image to the bounding rectangle
+    cropped = masked_img[y1:y2, x1:x2]
+        
+    # Resize the cropped image to 224x224
+    resized = cv2.resize(cropped, (224, 224))
+        
+    # Create a circular mask for the final image if you want to keep it circular
+    final_mask = np.zeros((224, 224), dtype=np.uint8)
+    cv2.circle(final_mask, (112, 112), 112, 255, -1)
+    final_img = cv2.bitwise_and(resized, resized, mask=final_mask)
+
+    return final_img
 
 
 def segment_img(gray_img):
@@ -186,7 +225,7 @@ def img_augmentation(input_folder, data_size):
     p = Augmentor.Pipeline(input_folder)
     
     # scaling
-    p.zoom(probability=0.5, min_factor=0.5, max_factor=1.5)
+    p.zoom(probability=0.8, min_factor=0.5, max_factor=1.5)
 
     # rotation / flip
     p.flip_top_bottom(probability=0.5)
